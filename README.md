@@ -1,4 +1,4 @@
-# AAAI 2025 Submission #XXXX
+# Logic-based Quantitative Predictive Monitoring and Control for Safe Human-Machine Interaction Under Uncertainty (AAAI2025)
 
 **Project Title:** Logic-based Quantitative Predictive Monitoring and Control for Safe Human-Machine Interaction Under Uncertainty
 
