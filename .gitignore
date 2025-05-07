@@ -1,0 +1,72 @@
+# === Python bytecode ===
+__pycache__/
+*.py[cod]
+*$py.class
+
+# === Compiled extensions ===
+*.so
+*.dll
+*.dylib
+*.out
+*.o
+
+# === Virtual environments ===
+.env/
+.venv/
+env/
+venv/
+STLU_ENV/
+CARLA_VIRTUAL_ENV/
+
+# === Jupyter Notebook checkpoints ===
+.ipynb_checkpoints/
+
+# === PyCharm project files ===
+.idea/
+*.iml
+
+# === VS Code settings ===
+.vscode/
+
+# === OS-generated files ===
+.DS_Store
+Thumbs.db
+
+# === Logs and temporary files ===
+*.log
+*.tmp
+*.swp
+
+# === RL experiment outputs ===
+checkpoints/
+runs/
+logs/
+tensorboard/
+results/
+output/
+plots/
+figures/
+*.npy
+*.npz
+*.pkl
+*.joblib
+
+# === CARLA-specific build and cache ===
+*.ue4project
+*.uproject
+Saved/
+Intermediate/
+Build/
+carla-logs/
+
+# === T1D simulator generated files ===
+T1DSim_output/
+sim_data/
+glucose_trace_*.csv
+insulin_*.csv
+
+# === Dataset or trace dumps ===
+data/
+datasets/
+recordings/
+saved_traces/
