@@ -1,315 +1,522 @@
 # Logic-based Quantitative Predictive Monitoring and Control for Safe Human-Machine Interaction Under Uncertainty (AAAI2025)
 
-**Project Title:** Logic-based Quantitative Predictive Monitoring and Control for Safe Human-Machine Interaction Under Uncertainty
+## Overview
 
-This repository contains code and data instructions for reproducing the results presented in the AAAI 2025 submission.
-It is organized by case study and step-by-step experimental flow as described in the paper (especially Section 5).
+This repository is organized around two use cases — a medical case and a driving case — each of which demonstrates how logic-based quantitative monitoring and control can be applied in sequential decision-making under uncertainty. The structure follows the experiment pipeline described in Section 5 of the paper, including data generation, model training, evaluation, and statistical analysis. All experiments are reproducible with the provided scripts, datasets, and trained models.
+
 
 ## Table of Contents
 
-- [Reproduction Instructions](#reproduction-instructions)
-- [Medical Case Study](#medical-case-study)
-- [Driving Case Study](#driving-case-study)
-- [Statistical Tests and Figures](#statistical-tests-and-figures)
+* [Reproduction Instructions](#reproduction-instructions)
+* [Medical Case Study](#medical-case-study)
+* [Driving Case Study](#driving-case-study)
+* [Statistical Tests and Figures](#statistical-tests-and-figures)
 
 ## Reproduction Instructions
 
-
 To reproduce the results:
 
-- Follow Steps 1–4 for Section 5.1 results
-- Follow Step 5 after 1–4 for Section 5.2
-- Follow Steps 6–7 after 1–5 for Section 5.3
-- Step 8: Statistical tests
-- Step 9: Figure drawing
+* Follow Steps 1–4 for Section 5.1 results
+* Follow Step 5 after 1–4 for Section 5.2
+* Follow Steps 6–7 after 1–5 for Section 5.3
+* Step 8: Statistical tests
+* Step 9: Figure drawing
 
-Each step corresponds to a folder and code file.
-There’s no need to change hyperparameters unless otherwise noted.
+Each step corresponds to a folder and code file. There’s no need to change hyperparameters unless otherwise noted.
 
+---
 
-## Medical Case Study
+The medical case study uses a modified Type-1 Diabetes simulator to evaluate the performance of logic-informed LSTM models for safe blood glucose regulation. The pipeline includes patient data simulation, LSTM training under different dropout loss strategies, evaluation via pre-alert and closed-loop metrics, and statistical comparison between baseline and proposed controllers.
 
-Medical Case Study
-Patient trace generation – Generate simulated patient traces using the simglucose simulator for model training
-Install the original version of simglucose simulator
-The code for original simulator is simglucose-master-original.zip. Set a path for this package as path\_simglucose.
-cd '{path\_simglucose}/simglucose-master-original'
-python setup.py install
-Use the original version of simglucose simulator to generate patient trace data
-Code file name:
-generate\_patient\_trace\_data\_with\_original\_simglucose\_simulator\_controller.py
-Set path for saving patient trace data and simulation results at line 28, 29.
-Run simulation with following parameters (can be found at line 30-39):
-# Simulation parameters:
-# Start date: 2022-06-30
-# Input simulation time (hr): 720h
-# Random Scnenario
-# Input simulation start time (hr): 0:00
-# Select random seed for random scenario: 15
-# Select the CGM sensor: Dexcom
-# Select Random Seed for Sensor Noise: 10
-# Select the insulin pump: Insulet
-# Select controller: Basal-Bolus Controller
-The final patient trace files used for the paper are in results/patient\_trace\_data.zip.
-There are a total of 30 patients (10 children, 10 adolescents and 10 adults.)
-These traces are used for LSTM model training, testing and validation in the following steps.
-LSTM Training – Preprocess the data, choose dropout params with the proposed loss function Lqt
-Three different models were trained for the three different patient populations (child, adolescent and adult). Select the file name (you can use any of them for testing the code):
-lstm\_medical\_data\_with\_dropout\_adolescent.py
-lstm\_medical\_data\_with\_dropout\_adult.py
-lstm\_medical\_data\_with\_dropout\_child.py
-Put STLU in a folder (code is in stlu\_monitor.zip). Set path for package STLU at line 29 of above code.
-Set path for loading patient trace data obtained in Step 1 at line 68.
-Set path for saving trained models, at line 72.
-Set path for saving mean/std values at line 211.
-Set path for saving all\_mean\_value.csv, all\_std\_value.csv at line 212, 213. Those files are for converting standardized data back to original scale.
-Set path for saving output metrics results at line 860.
-Run the code to see results.
-The final trained models for each patient type used in the paper are in trained model.zip. The prediction results for each patient type (metric value, overall results, dropout parameter choice files) are in corresponding folder. Files with prediction of each segment are not listed because of limited file size, but they will be generated after Step 2. The all\_mean\_value.csv and all\_std\_value.csv are also saved. They will be used in following steps.
-Choose dropout with baseline loss functions (Lsat, Lacc)
-Choose dropout type/rate with Lsat
-Folder name: select\_dropout\_with\_lossfunc\_LSAT
-Code file name (you can use any of them for testing the code):
-lstm\_medical\_data\_choose\_dropout\_lsat\_adolescent.py
-lstm\_medical\_data\_choose\_dropout\_lsat\_adult.py
-lstm\_medical\_data\_choose\_dropout\_lsat\_child.py
-Set path for loading STLU package at line 29 (as in Step 2, b)).
-Set path for loading all patient trace data obtained in Step 1 at line 68.
-Set path for saving output results at line 921.
-Set path for loading trained models for each patient type get in Step 2 at line 929, 931, 933.
-Set path for loading data files used for standardizing dataset get from Step 2 (all\_std\_value.csv, all\_mean\_value.csv) at line 936, 937.
-Run the code to see results.
-The final results used in paper are in results/choose\_dropout\_lsat\_results.zip. Those files will be used in Step 4 and beyond.
-Choose dropout type/rate with Lacc
-The procedures are the same as for Lsat in a).
-Code file name (you can use any of them for testing the code):
-lstm\_medical\_data\_choose\_dropout\_lacc\_adolescent.py
-lstm\_medical\_data\_choose\_dropout\_lacc\_adult.py
-lstm\_medical\_data\_choose\_dropout\_lacc\_child.py
-Set path for loading STLU package at line 29 (as in Step 2, b)).
-Set path for loading all patient trace data get in Step 1 at line 68.
-Set path for saving output results at line 916.
-Set path for loading trained models for each patient type get in Step 2 at line 924, 926, 928.
-Set path for loading data files used for standardizing dataset (the same all\_std\_value.csv, all\_mean\_value.csv as in a)) at line 931, 932.
-Run the code to see results.
-The final results used in paper is in results/choose\_dropout\_lacc\_results.zip. Those files will be used in Step 4 and beyond.
-Predict test set with trained LSTM model with chosen dropout type/rate & evaluation
-Predict test set with dropout params chosen by Lqt
-Code file name (you can use any of them for testing the code):
-lstm\_medical\_predict\_testing\_set\_lqt\_adolescent.py
-lstm\_medical\_predict\_testing\_set\_lqt\_adult.py
-lstm\_medical\_predict\_testing\_set\_lqt\_child.py
-Set path for loading STLU package at line 29 (as in Step 2, b)).
-Set path for loading all patient trace data get in Step 1 at line 68.
-Set path for saving output results at line 832.
-Set path for loading trained models for each patient type get in Step 2 at line 838, 840, 842.
-Set path for loading data files used for standardizing dataset (the same all\_std\_value.csv, all\_mean\_value.csv get in Step 2) at line 847, 848.
-Confirm the chosen dropout type and rate at line 844, 845 is consistent with results in Step 2.
-For example, for adult patient, look in to the file named like dropout\_choice\_result\_train\_type\_4\_train\_rate\_0.9\_lr\_0.01\_e\_50.csv in adult results folder get in Step 2, and find the smallest loss value in the form. Then use the corresponding dropout type and rate in line 844, 845 for dropout\_rate\_dict and dropout\_type\_dict. The same for adolescent and child.
-Run the code to see results (accuracy, F1, prediction of each sample in testing set).
-Metric file name is named like: metrics\_results\_one\_side\_b\_1024\_seqlen\_20\_stepback\_10\_e\_1\_lr\_0.01\_f\_8\_conf\_0.95\_dt\_2\_dr\_0.8.csv in each patient type output folder.
-Segment file with prediction on each sample in testing set is named like: segment\_results\_b\_1024\_seqlen\_20\_stepback\_10\_e\_1\_lr\_0.001\_f\_8\_conf\_0.95\_dt\_2\_dr\_0.9.csv in each patient type output folder.
-Overall result file is named like results\_b\_1024\_seqlen\_20\_stepback\_10\_e\_1\_lr\_0.001\_f\_8\_conf\_0.95\_dt\_2\_dr\_0.9.csv in each patient type output folder.
-The final segment\_results files used in paper are not included because of limited file size, but will be generated after this step. Other outputs are in the results folder.
-Predict test set with dropout params chosen by Lsat
-The procedure is the same as in a). Except in step 7):
-Confirm the chosen dropout type and rate at line 845, 846 is consistent with results in Step 3, a).
-For example, for adult patient, look in to the file dropout\_choice\_result\_train\_type\_4\_train\_rate\_0.9\_lr\_0.001\_e\_1.csv in adult result folder get in Step 3, a). Find the smallest loss value in the form. Then use the corresponding dropout type and rate in line 845, 846 for dropout\_rate\_dict and dropout\_type\_dict. The same for adolescent and child.
-Predict test set with dropout params chosen by Lacc
-The procedure is the same as in a). Except in step 7):
-Confirm the chosen dropout type and rate at line 845, 846 is consistent with results in Step 3, b).
-For example, for adult patient, look in to the file dropout\_choice\_result\_train\_type\_4\_train\_rate\_0.9\_lr\_0.001\_e\_1.csv in adult result folder get in Step 3, a). Find the smallest loss value in the form. Then use the corresponding dropout type and rate in line 845, 846 for dropout\_rate\_dict and dropout\_type\_dict. The same for adolescent and child.
-For Table 1 results shown in the paper
-Please look at metric result file named like metrics\_results\_one\_side\_b\_1024\_seqlen\_20\_stepback\_10\_e\_1\_lr\_0.001\_f\_8\_conf\_0.95\_dt\_3\_dr\_0.5 for each type of patient in the results folder generated by a), b) and c), respectively.
-Pre-alert time evaluation
-Code file name: calculate\_prediction\_metrics\_and\_pre\_alert\_time.py
-Set following path:
-Path for loading STLU at line 28.
-Path for loading prediction on testing set for each type of patient at line 311~314. The file loaded should be the segment\_result files generated from Step 4, a), 8).
-Path for saving results at line 319, 518.
-Run the code to see results and save generated data files. Those files will be used in following steps.
-The results used in the paper are in folder results.
-Closed-loop simulation for 3 types of patients with proposed controller and baseline
-Set path for STLU at line 17 in file sim\_engine.py in simglucose\_modified\simglucose\simulation
-Install modified version of simglucose package in simglucose\_modified.zip
-Set paths for baseline simulation in file: medical\_case\_pipeline\_new\_controller\_structure\_no\_lstm.py
-Path for STLU at line 29.
-Path for trained lstm models for adult, adolescent and child at line 647, 649, 651. The models are obtained from Step 2.
-Path for data files for standardizing dataset (the same all\_std\_value.csv, all\_mean\_value.csv as in Step 2) at line 656, 657.
-Path for saving simulation results at line 679.
-Run simulations with baseline controller for each type of patient and save the results.
-Code file name:
-no\_lstm\_adolescent.py
-no\_lstm\_adult.py
-no\_lstm\_child.py
-Get all meal time and amount data of each patient from baseline results with file:
-get\_meal\_time\_amount\_each\_patient.py
-Set path for loading baseline simulation trace results at line 34. The files are obtained from d).
-Set path for saving result file all\_meal\_time.csv and all\_meal\_amount.csv at line 38, 40.
-Run code to save the 2 files. They will be used in following steps.
-Set following paths for proposed controller in medical\_case\_pipeline\_new\_controller\_structure\_eq\_2.py:
-Path for STLU at line 28
-Path for trained lstm models for adult, adolescent and child at line 658, 660, 662. The models are from Step 2.
-Path for data files for standardizing dataset (the same all\_std\_value.csv, all\_mean\_value.csv get in Step 2) at line 667, 668.
-Path for loading each meal time and meal amount for each patient (all\_meal\_amount.csv, all\_meal\_time.csv get in e)) at line 669, 670.
-Path for saving simulation results at line 693.
-Make sure the dropout types and rates in dropout\_type\_dict and dropout\_rate\_dict at line 664, 665 are the same chosen parameters as in Step 4, a), 7) for each type of patient.
-Run simulations with proposed control type for each type of patient and save the results.
-Code file name:
-batchRun\_adolescent\_1.py
-batchRun\_adult\_1.py
-batchRun\_child\_1.py
-The results used in the paper are in the results folder:
-Folder no\_lstm for baseline simulation results.
-Folder adult, adolescent, child for proposed method simulation results.
-Those files will be used in following steps.
-Closed-loop simulation evaluation
-Code file name: calculate\_medical\_case\_pipeline\_controller\_metrics.py
-Set path for loading simulation results of baseline and proposed method at line 364. This folder should contain 4 sub-folders: no\_lstm, adult\_patient, child\_patient, adolescent\_patient. The first is baseline results, the other 3 are proposed controller results. They are obtained from Step 5.
-Set path for saving results at line 371, 430, 518.
-Run the code to get the results. The results contain the metric values in Table 3 in the paper.
-The results used in the paper are in folder results.
-Statistical test
-Code file name: statistical\_test.py
-For pre-alert time:
-Set path at line 18 to load the result of pre-alert time from Step 7, c). The files used in this step are named like real\_cgm\_trace\_with\_hazard\_lable\_{patient\_type}\_{control\_type}.csv.
-Set path at line 19, 61 to save statistical test results of pre-alert time.
-For Time in Range (TIR) and hazards number:
-Set path at line 92 to load result files of simulations obtained from Step 6, d). The files are named like controller\_metrics\_result\_{patient\_type}.csv and medical\_metrics\_results\_{patient\_type}.csv.
-Set path at line 93 to save statistical test results of Time-in-range and hazards number.
-Run the code to see results.
-Figure drawing
-Code file name: figure\_drawing.py
-Draw Fig.5: compare CGM of baseline and proposed method for 3 patients.
-Set path at line 30, 42, 43, 48, 49, 53, 54 to load the closed-loop simulation traces of baseline and proposed method.
-Set path at line 31 to save the figure.
-Draw Fig.6: compare number of hazards.
-Set path at line 174~178 to load the controller metrics results for each type of patient obtained from Step 6, d), and save the figures.
-Draw Fig.4~8: compare loss function values with different dropout types and rates for each type of patient
-Set path at line 214~218 to load the results of each type of patient from Step 2. Example file name: dropout\_choice\_result\_train\_type\_4\_train\_rate\_0.9\_lr\_0.001\_e\_1.csv
-Run the code to see the figures.
+## [Medical Case Study](#medical-case-study)
 
-## Driving Case Study
+### Step 1: Patient Trace Generation
 
+**Objective:** Generate simulated patient traces using the original simglucose simulator for model training.
 
+1. **Install simulator**
 
-## Statistical Tests and Figures
+   * Unzip and install from `simglucose-master-original.zip`: (Author and original page: https://github.com/jxx123/simglucose)
 
-Statistical test
-Code file name: statistical\_test.py
-For pre-alert time:
-Set path at line 18 to load the result of pre-alert time from Step 7, c). The files used in this step are named like real\_cgm\_trace\_with\_hazard\_lable\_{patient\_type}\_{control\_type}.csv.
-Set path at line 19, 61 to save statistical test results of pre-alert time.
-For Time in Range (TIR) and hazards number:
-Set path at line 92 to load result files of simulations obtained from Step 6, d). The files are named like controller\_metrics\_result\_{patient\_type}.csv and medical\_metrics\_results\_{patient\_type}.csv.
-Set path at line 93 to save statistical test results of Time-in-range and hazards number.
-Run the code to see results.
-Figure drawing
-Code file name: figure\_drawing.py
-Draw Fig.5: compare CGM of baseline and proposed method for 3 patients.
-Set path at line 30, 42, 43, 48, 49, 53, 54 to load the closed-loop simulation traces of baseline and proposed method.
-Set path at line 31 to save the figure.
-Draw Fig.6: compare number of hazards.
-Set path at line 174~178 to load the controller metrics results for each type of patient obtained from Step 6, d), and save the figures.
-Draw Fig.4~8: compare loss function values with different dropout types and rates for each type of patient
-Set path at line 214~218 to load the results of each type of patient from Step 2. Example file name: dropout\_choice\_result\_train\_type\_4\_train\_rate\_0.9\_lr\_0.001\_e\_1.csv
-Run the code to see the figures.
-Driving Case Study
-Vehicle trace generation – Generate simulated vehicle traces using the SafeBench simulator for model training
-Install the original version of SafeBench with following link:
-https://github.com/trust-ai/SafeBench
-Replace the folder ‘safebench’ and ‘script’ with the provide folder in SafeBench\_1
-Generate vehicle trace data
-Run following code at safebench\predictive\_monitor\_trace:
-run\_multiple\_times.sh
-Set i in range [1, 15], this is the seed for generating traces;
-Set --if\_new\_controller to 0;
-Change the file path in the script.
-The final vehicle trace files used for the paper are in results/vehicle\_trace\_data.zip.
-There are 2 examples for each behavior type.
-These traces are used for LSTM model training, testing and validation in the following steps.
-LSTM Training – Preprocess the data, choose dropout params with the proposed loss function Lqt
-2 different models were trained for the 2 different behavior types (cautious, aggressive). Select the file name (you can use any of them for testing the code):
-lstm\_driving\_data\_with\_dropout\_Lqt\_behavior\_0.py
-lstm\_driving\_data\_with\_dropout\_Lqt\_behavior\_2.py
-Put STLU in a folder (code is in stlu\_monitor.zip). Set path for package STLU.
-Set following path in the file:
-path for loadingtrace data obtained in Step 1,
-path for saving trained models,
-path for saving mean/std values,
-path for saving all\_mean\_value.csv, all\_std\_value.csv. Those files are for converting standardized data back to original scale.
-path for saving output metrics results.
-Run the code to see results.
-The final trained models for each behavior type used in the paper are in trained model.zip. The prediction results for each behavior type (metric value, overall results, dropout parameter choice files) are in corresponding folder. Files with prediction of each segment are not listed because of limited file size, but they will be generated after Step 2. The all\_mean\_value.csv and all\_std\_value.csv are also saved. They will be used in following steps.
-Choose dropout with baseline loss functions (Lsat, Lacc)
-Choose dropout type/rate with Lsat
-Folder name: select\_dropout\_with\_lossfunc\_LSAT
-Code file name (you can use any of them for testing the code):
-lstm\_driving\_data\_choose\_dropout\_lsat\_behavior\_0.py
-lstm\_driving\_data\_choose\_dropout\_lsat\_behavior\_2.py
-Set following path before running the code:
-Path for loading STLU packag.
-Path for loading all vehicle trace data obtained in Step 1.
-Path for saving output results.
-Path for loading trained models for each behavior type get in Step 2.
-Path for loading data files used for standardizing dataset get from Step 2 (all\_std\_value.csv, all\_mean\_value.csv).
-Run the code to see results.
-The final results used in paper are in select\_dropout\_with\_lossfunc\_LSAT. Those files will be used in Step 4 and beyond.
-Choose dropout type/rate with Lacc
-The procedures are the same as for Lsat in a).
-Code file name (you can use any of them for testing the code):
-lstm\_driving\_data\_choose\_dropout\_lacc\_behavior\_0.py
-lstm\_driving\_data\_choose\_dropout\_lacc\_behavior\_2.py
-Set path before running the code.
-Run the code to see results.
-The final results used in paper is in select\_dropout\_with\_lossfunc\_LACC. Those files will be used in Step 4 and beyond.
-Predict test set with trained LSTM model with chosen dropout type/rate & evaluation
-Predict test set with dropout params chosen by Lqt
-Code file name (you can use any of them for testing the code):
-lstm\_driving\_data\_predict\_testing\_set\_Lqt\_behavior\_0.py
-lstm\_driving\_data\_predict\_testing\_set\_Lqt\_behavior\_2.py
-Set following path before run the code:
-path for loading STLU package.
-path for loading all vehicle trace data get in Step 1.
-path for saving output results.
-path for loading trained models for each behavior type get in Step 2.
-path for loading data files used for standardizing dataset (the same all\_std\_value.csv, all\_mean\_value.csv get in Step 2).
-Confirm the chosen dropout type and rate at line 844, 845 is consistent with results in Step 2.
-Run the code to see results (accuracy, F1, prediction of each sample in testing set).
-The final segment\_results files used in paper are not included because of limited file size, but will be generated after this step. Other outputs are in the results folder.
-Predict test set with dropout params chosen by Lsat
-The procedure is the same as in a). Except in step 7):
-Confirm the chosen dropout type and rate is consistent with results in Step 3, a).
-Predict test set with dropout params chosen by Lacc
-The procedure is the same as in a). Except in step 7):
-Confirm the chosen dropout type and rate is consistent with results in Step 3, b).
-For Table 1 results shown in the paper
-Please look at metric result file named like metrics\_results\_one\_side\_b\_1024\_seqlen\_50\_stepback\_30\_e\_1\_lr\_0.001\_f\_17\_conf\_0.95\_dt\_4\_dr\_0.6.csv for each type of behavior in the results folder generated by a), b) and c), respectively.
-Pre-alert time evaluation
-Code file name: calculate\_prediction\_metrics\_and\_pre\_alert\_time.py
-Set following path:
-Path for loading STLU.
-Path for loading prediction on testing set for each behavior type. The file loaded should be the segment\_result files generated from Step 4, a), 8).
-Path for saving results.
-Run the code to see results and save generated data files. Those files will be used in following steps.
-The results used in the paper are in folder results.
-Closed-loop simulation for 2 behavior types with proposed controller and baseline
-Run following code at safebench\predictive\_monitor\_trace:
-run\_multiple\_times.sh
-Set i in range [0, 3], this is the seed for different trials;
-Set --if\_new\_controller 1 --control\_type lstm\_with\_monitor to run proposed method.
-Set --if\_new\_controller 1 --control\_type no\_lstm to run baseline method.
-The results used in the paper are in the results folder:
-Folder no\_lstm for baseline simulation results.
-Folder lstm\_with\_monitor for proposed method simulation results.
-Those files will be used in following steps.
-Closed-loop simulation evaluation
-Code file name: metric\_calcualtion\_close\_loop\_driving\_case.py
-Set path for loading simulation results of baseline and proposed metho.They are obtained from Step 5.
-Set path for saving results.
-Run the code to get the results. The results contain the metric values in Table 3 in the paper.
-The results used in the paper are in the same folder.
-Figure drawing
-Code file name: figure\_drawing\_driving\_case.py
-Set path to files obtained in steps above. They have a similar name as in the examples in the code.
-Run the code to see the figures.
+     ```bash
+     cd '{path_simglucose}/simglucose-master-original'
+     python setup.py install
+     ```
+
+2. **Run simulation script**
+
+   * File: `generate_patient_trace_data_with_original_simglucose_simulator_controller.py`
+   * Set paths at line 28 and 29 for saving output.
+
+3. **Simulation parameters (set at line 30–39):**
+
+   ```python
+   # Start date: 2022-06-30
+   # Simulation duration: 720 hours
+   # Start time: 0:00
+   # Random scenario seed: 15
+   # CGM sensor: Dexcom
+   # Sensor noise seed: 10
+   # Insulin pump: Insulet
+   # Controller: Basal-Bolus Controller
+   ```
+
+4. **Output**
+
+   * Folder: `results/patient_trace_data.zip`
+   * Contains traces for 30 patients (10 children, 10 adolescents, 10 adults)
+   * Used for LSTM model training, testing, and validation in later steps
+
+### Step 2: LSTM Training with Lqt
+
+**Objective:** Train LSTM models with proposed loss function Lqt for different patient populations (child, adolescent, adult).
+
+1. **Choose training script:**
+
+   * `lstm_medical_data_with_dropout_adolescent.py`
+   * `lstm_medical_data_with_dropout_adult.py`
+   * `lstm_medical_data_with_dropout_child.py`
+
+2. **Set required paths in the script:**
+   * Paths to STLU monitor, patient data, output model/results, and normalization files
+
+3. **Run the script** to train the LSTM model and evaluate performance.
+
+4. **Output**
+
+   * Trained models for each patient type (saved in `trained model.zip`)
+   * Prediction results (dropout selection results, segment predictions)
+   * `all_mean_value.csv` and `all_std_value.csv` (used in later steps for normalization recovery)
+
+Note: Files with individual segment predictions are not included due to size limits but will be generated automatically after this step.\`
+
+### Step 3: Choose Dropout with Lsat and Lacc
+
+**Objective:** Select optimal dropout type and rate using two baseline loss functions: Lsat and Lacc.
+
+#### a) Choose Dropout with Lsat
+
+1. **Choose script based on patient group:**
+
+   * `lstm_medical_data_choose_dropout_lsat_adolescent.py`
+   * `lstm_medical_data_choose_dropout_lsat_adult.py`
+   * `lstm_medical_data_choose_dropout_lsat_child.py`
+
+2. **Set required paths in script:**
+
+   * Paths to STLU monitor, patient data, trained models, and normalization files
+
+3. **Run the script** to compute loss values for different dropout configurations.
+
+4. **Output**
+
+   * Folder: `results/choose_dropout_lsat_results.zip`
+   * Contains dropout selection results for each patient type
+   * Will be used in later prediction steps
+
+#### b) Choose Dropout with Lacc
+
+1. **Choose script based on patient group:**
+
+   * `lstm_medical_data_choose_dropout_lacc_adolescent.py`
+   * `lstm_medical_data_choose_dropout_lacc_adult.py`
+   * `lstm_medical_data_choose_dropout_lacc_child.py`
+
+2. **Set required paths in script:**
+
+   * Paths to STLU monitor, patient data, trained models, and normalization files
+  
+3. **Run the script** to evaluate dropout configurations under Lacc loss.
+
+4. **Output**
+
+   * Folder: `results/choose_dropout_lacc_results.zip`
+   * Dropout results to be used in Step 4 and beyond\`
+
+### Step 4: Predict Test Set with Chosen Dropout
+
+**Objective:** Evaluate the trained LSTM models on a test set using the dropout types and rates chosen in Steps 2 and 3.
+
+#### a) Predict with Dropout Parameters from Lqt
+
+1. **Choose script based on patient group:**
+
+   * `lstm_medical_predict_testing_set_lqt_adolescent.py`
+   * `lstm_medical_predict_testing_set_lqt_adult.py`
+   * `lstm_medical_predict_testing_set_lqt_child.py`
+
+2. **Set required paths in script:**
+
+   * Paths to STLU monitor, patient data, trained models, normalization files, and output folder
+   * Set dropout type/rate manually based on Step 2 results
+
+3. **Run the script** to generate accuracy, F1 scores, and per-segment predictions
+
+#### b) Predict with Dropout Parameters from Lsat
+
+* Follow the same procedure as (a)
+* Set `dropout_type_dict` and `dropout_rate_dict` based on lowest Lsat loss (Step 3a)
+
+#### c) Predict with Dropout Parameters from Lacc
+
+* Follow the same procedure as (a)
+* Set dropout values according to lowest Lacc loss (Step 3b)
+
+4. **Output:**
+
+   * `metrics_results_*.csv`: Overall accuracy and F1 score for each patient type
+   * `segment_results_*.csv`: Per-segment prediction file for each patient type
+   * `results_*.csv`: Combined evaluation results
+
+Note: Segment results files are not included due to size limits but will be regenerated. These outputs support Table 1 in the paper.
+
+### Step 5: Pre-alert Time Evaluation
+
+**Objective:** Evaluate pre-alert time based on prediction results from Step 4.
+
+1. **Run the script**
+
+   * File: `calculate_prediction_metrics_and_pre_alert_time.py`
+
+2. **Set required paths in script:**
+
+   * Paths to STLU monitor, prediction results from Step 4, and output folder
+     
+3. **Run the script** to compute pre-alert time and related prediction metrics.
+
+4. **Output**
+
+   * Results are saved in the `results` folder
+   * Generated files will be used in subsequent closed-loop evaluation and statistical testing
+
+### Step 6: Closed-loop Simulation
+
+**Objective:** Evaluate the performance of the proposed controller and baseline in a closed-loop simulation setting for all patient types.
+
+#### a) Install and Configure Modified simglucose
+
+1. **Install modified simulator** from `simglucose_modified.zip`
+
+   * Set the path for STLU in `sim_engine.py` at line 17 within `simglucose_modified/simglucose/simulation`
+
+#### b) Run Baseline Simulations (No LSTM Controller)
+
+1. **Script:** `medical_case_pipeline_new_controller_structure_no_lstm.py`
+2. **Set the following paths:**
+
+   * Set paths to STLU, trained models, normalization files, and simulation outputs
+ 
+3. **Run baseline simulations:**
+
+   * Scripts: `no_lstm_adolescent.py`, `no_lstm_adult.py`, `no_lstm_child.py`
+
+#### c) Extract Meal Time and Amount
+
+1. **Script:** `get_meal_time_amount_each_patient.py`
+2. **Set paths:**
+
+   * Input: baseline simulation results
+     
+3. **Run script** to generate meal info files
+
+#### d) Run Simulations with Proposed Controller
+
+1. **Script:** `medical_case_pipeline_new_controller_structure_eq_2.py`
+
+2. **Set the following paths:**
+
+   * Set paths to STLU, trained models, normalization files, meal files, and output folder
+   * Confirm dropout types/rates are consistent with Step 4a
+
+3. **Run proposed simulations:**
+
+   * Scripts: `batchRun_adolescent_1.py`, `batchRun_adult_1.py`, `batchRun_child_1.py`
+
+4. **Output**
+
+   * Baseline results saved in: `results/no_lstm`
+   * Proposed results saved in: `results/adult`, `results/adolescent`, `results/child`
+
+### Step 7: Closed-loop Evaluation
+
+**Objective:** Evaluate the performance of baseline and proposed controllers using simulation results.
+
+1. **Run the script:**
+
+   * File: `calculate_medical_case_pipeline_controller_metrics.py`
+
+2. **Set required paths in script:**
+
+   * Paths to simulation outputs and results directory
+
+3. **Run the script** to compute evaluation metrics such as Time-in-Range (TIR), number of hazards, etc.
+
+4. **Output**
+
+   * All results are saved in the `results` folder
+   * Metrics used for Table 3 in the paper)
+
+### Step 8: Statistical Tests
+
+**Objective:** Conduct statistical significance testing on pre-alert time, Time-in-Range (TIR), and number of hazards.
+
+1. **Run the script:**
+
+   * File: `statistical_test.py`
+
+2. **Set required paths in the script:**
+
+   * Paths to pre-alert results from Step 5, simulation results from Step 6, and output folders
+   
+3. **Run the script** to perform t-tests or other appropriate statistical comparisons
+
+5. **Output**
+
+   * Results are saved in the `results` folder and used to support quantitative claims in the paper
+
+### Step 9: Figure Drawing
+
+**Objective:** Reproduce figures in the paper comparing performance under different dropout settings and controller types.
+
+1. **Run the script:**
+
+   * File: `figure_drawing.py`
+
+2. **Set required paths in the script:**
+
+   * Paths to simulation traces, controller metrics, and dropout evaluation files
+
+3. **Run the script to generate Figures 4–8:**
+
+   * Lines 174–178: Load controller metrics results from Step 6 output
+
+5. **Run the script** to generate all the required figures
+
+6. **Output**
+
+   * Figures are saved in the specified output directory and correspond to Figures 4–8 in the paper
+
+---
+
+The driving case study uses the SafeBench simulator to evaluate predictive monitoring of vehicle behaviors under different control policies, including logic-informed LSTM controllers.
+
+## [Driving Case Study](#driving-case-study)
+
+### Step 1: Vehicle Trace Generation
+
+**Objective:** Generate simulated vehicle traces using the SafeBench simulator for model training.
+
+1. **Install and configure SafeBench**
+
+   * Install from: [https://github.com/trust-ai/SafeBench](https://github.com/trust-ai/SafeBench)
+   * Replace folders `safebench` and `script` with the provided versions in `SafeBench_1`
+
+2. **Run simulation script**
+
+   * Navigate to `safebench/predictive_monitor_trace`
+   * Run: `run_multiple_times.sh`
+   * Set parameters:
+
+     * `i` in range `[1, 15]` (random seed)
+     * `--if_new_controller 0`
+     * Update file paths as needed in the script
+
+3. **Output**
+
+   * Folder: `results/vehicle_trace_data.zip`
+   * Contains 2 examples for each behavior type (e.g., cautious, aggressive)
+   * These traces are used for model training and evaluation in subsequent steps\`
+
+### Step 2: LSTM Training with Lqt
+
+**Objective:** Train LSTM models using the proposed loss function Lqt for different vehicle behavior types.
+
+1. **Choose training script based on behavior type:**
+
+   * `lstm_driving_data_with_dropout_Lqt_behavior_0.py` (e.g., cautious)
+   * `lstm_driving_data_with_dropout_Lqt_behavior_2.py` (e.g., aggressive)
+
+2. **Set required paths in the script:**
+
+   * Path to load vehicle trace data (from Step 1)
+   * Path to STLU monitor package (from `stlu_monitor.zip`)
+   * Path to save trained models
+   * Path to save `all_mean_value.csv` and `all_std_value.csv` for normalization recovery
+   * Path to save output metric results
+
+3. **Run the script** to train models and evaluate dropout configurations.
+
+4. **Output**
+
+   * Trained models for each behavior type (saved in `trained model.zip`)
+   * Dropout result files for each configuration
+   * `all_mean_value.csv` and `all_std_value.csv` for standardization
+
+Note: Segment-level prediction files are not included in the repo due to size limits but will be generated automatically after training.
+
+### Step 3: Choose Dropout with Lsat and Lacc
+
+**Objective:** Evaluate dropout types and rates using two baseline loss functions: Lsat and Lacc.
+
+#### a) Choose Dropout with Lsat
+
+1. **Choose script based on behavior type:**
+
+   * `lstm_driving_data_choose_dropout_lsat_behavior_0.py`
+   * `lstm_driving_data_choose_dropout_lsat_behavior_2.py`
+
+2. **Set required paths in script:**
+
+   * Path to STLU monitor package
+   * Path to vehicle trace data from Step 1
+   * Path to trained models from Step 2
+   * Path to `all_mean_value.csv` and `all_std_value.csv` from Step 2
+   * Path to save output results
+
+3. **Run the script** to compute dropout performance under Lsat loss.
+
+4. **Output**
+
+   * Folder: `select_dropout_with_lossfunc_LSAT`
+   * Dropout results to be used in Step 4 and beyond
+
+#### b) Choose Dropout with Lacc
+
+1. **Choose script based on behavior type:**
+
+   * `lstm_driving_data_choose_dropout_lacc_behavior_0.py`
+   * `lstm_driving_data_choose_dropout_lacc_behavior_2.py`
+
+2. **Set required paths in script:**
+
+   * Same as Lsat step above, updated for Lacc-specific paths and file names
+
+3. **Run the script** to evaluate dropout settings under Lacc loss.
+
+4. **Output**
+
+   * Folder: `select_dropout_with_lossfunc_LACC`
+   * Dropout results to be used in Step 4 and beyond\`
+
+### Step 4: Predict Test Set with Chosen Dropout
+
+**Objective:** Evaluate trained LSTM models on the test set using dropout types and rates selected from Lqt, Lsat, or Lacc.
+
+1. **Choose prediction script based on behavior type and dropout selection:**
+
+   * `lstm_driving_data_predict_testing_set_Lqt_behavior_0.py`
+   * `lstm_driving_data_predict_testing_set_Lqt_behavior_2.py`
+   * (Or equivalent scripts for Lsat and Lacc based evaluations)
+
+2. **Set required paths in the script:**
+
+   * Path to STLU monitor package
+   * Path to vehicle trace data (from Step 1)
+   * Path to trained LSTM models (from Step 2)
+   * Path to normalization files (`all_mean_value.csv`, `all_std_value.csv` from Step 2)
+   * Path to save output results
+   * Confirm dropout parameters (type/rate) from `dropout_choice_result_*.csv` in Step 2 or 3
+
+3. **Run the script** to compute prediction metrics such as accuracy and F1, and generate segment-level prediction outputs.
+
+4. **Output**
+
+   * `metrics_results_*.csv`: Test accuracy and F1 score for each behavior type
+   * `segment_results_*.csv`: Prediction results on each test segment
+   * These files support Table 1 results in the paper
+
+### Step 5: Pre-alert Time Evaluation
+
+**Objective:** Compute pre-alert time metrics from prediction results generated in Step 4.
+
+1. **Run the script:**
+
+   * File: `calculate_prediction_metrics_and_pre_alert_time.py`
+
+2. **Set required paths in the script:**
+
+   * Path to STLU monitor package
+   * Path to segment result files (generated from Step 4, e.g., `segment_results_*.csv`)
+   * Path to save output metrics and intermediate files
+
+3. **Run the script** to evaluate pre-alert effectiveness for each behavior type.
+
+4. **Output:**
+
+   * Result files saved in the `results` folder
+   * These outputs will be used in Step 6 (simulation comparison) and Step 7 (closed-loop evaluation)
+
+### Step 6: Closed-loop Simulation
+
+**Objective:** Run and compare closed-loop simulations using baseline and proposed controllers for different driving behaviors.
+
+1. **Navigate to simulation script directory:**
+
+   * `safebench/predictive_monitor_trace`
+
+2. **Run baseline controller simulations:**
+
+   * Command:
+
+     ```bash
+     ./run_multiple_times.sh --if_new_controller 1 --control_type no_lstm
+     ```
+   * Set `i` in range `[0, 3]` for different seeds
+
+3. **Run proposed controller simulations:**
+
+   * Command:
+
+     ```bash
+     ./run_multiple_times.sh --if_new_controller 1 --control_type lstm_with_monitor
+     ```
+   * Set `i` in range `[0, 3]` for different seeds
+
+4. **Output:**
+
+   * Baseline results saved in: `results/no_lstm`
+   * Proposed controller results saved in: `results/lstm_with_monitor`
+   * These outputs will be used in Step 7 and Step 8\`
+
+### Step 7: Closed-loop Evaluation
+
+**Objective:** Evaluate the closed-loop performance of both baseline and proposed controllers based on driving behavior simulations.
+
+1. **Run the script:**
+
+   * File: `metric_calcualtion_close_loop_driving_case.py`
+
+2. **Set required paths in the script:**
+
+   * Path to simulation result folder containing `no_lstm` and `lstm_with_monitor` subfolders (from Step 6)
+   * Path to save computed evaluation metrics
+
+3. **Run the script** to compute metrics such as number of hazards, time in safe range, or other task-specific evaluation results.
+
+4. **Output:**
+
+   * Metrics saved in the specified output folder
+   * These results correspond to Table 3 in the paper
+
+### Step 8: Figure Drawing
+
+**Objective:** Generate driving-related figures as shown in the paper.
+
+1. **Run the script:**
+
+   * File: `figure_drawing_driving_case.py`
+
+2. **Set required paths in the script:**
+
+   * Paths to simulation outputs from previous steps (e.g., `results/no_lstm`, `results/lstm_with_monitor`)
+   * Paths to controller metrics results used in closed-loop evaluation
+   * Example filenames can be found in the script comments (e.g., `controller_metrics_result_behavior_*.csv`, `segment_results_*.csv`)
+
+3. **Run the script** to generate visualizations for different dropout settings, controller comparisons, and behavioral metrics.
+
+4. **Output:**
+
+   * Figures will be saved in the designated output directory
+   * These correspond to the driving case study visualizations presented in the paper
+
+---
