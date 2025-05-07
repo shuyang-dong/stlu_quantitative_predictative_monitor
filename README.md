@@ -520,10 +520,3 @@ Note: Segment-level prediction files are not included in the repo due to size li
    * These correspond to the driving case study visualizations presented in the paper
 
 ---
-
-## Notes
-
-* Required folders: `results`, `stlu_monitor.zip`, `trained model.zip`, `SafeBench_1`, `simglucose-master-original.zip`, `simglucose_modified.zip`
-* Example filenames are referenced throughout for clarity.
-
-If you have any questions or issues, please reach out to the corresponding author.
