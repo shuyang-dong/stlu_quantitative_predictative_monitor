@@ -1,4 +1,4 @@
-# Logic-based Quantitative Predictive Monitoring and Control for Safe Human-Machine Interaction Under Uncertainty (AAAI2025)
+# Quantitative Predictive Monitoring and Control for Safe Human-Machine Interaction (AAAI2025)
 
 ## Overview
 
@@ -520,3 +520,23 @@ Note: Segment-level prediction files are not included in the repo due to size li
    * These correspond to the driving case study visualizations presented in the paper
 
 ---
+
+## Citation & Attribution
+
+This repository contains code developed as part of the following publication:
+
+**Quantitative Predictive Monitoring and Control for Safe Human-Machine Interaction**  
+*Proceedings of the AAAI Conference on Artificial Intelligence*, 2025
+
+If you use this code or build upon it, please cite the original work:
+
+```bibtex
+@inproceedings{dong2025quantitative,
+  title={Quantitative Predictive Monitoring and Control for Safe Human-Machine Interaction},
+  author={Dong, Shuyang and Ma, Meiyi and Lamp, Josephine and Elbaum, Sebastian and Dwyer, Matthew B and Feng, Lu},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={39},
+  number={25},
+  pages={26203--26210},
+  year={2025}
+}
