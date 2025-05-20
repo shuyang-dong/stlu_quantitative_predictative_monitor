@@ -12,6 +12,26 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
+---  
+**Attribution Requirement**:  
+This project was originally developed by **Shuyang Dong** as part of the paper:
+
+"Quantitative Predictive Monitoring and Control for Safe Human-Machine Interaction"  
+Presented at the Proceedings of the AAAI Conference on Artificial Intelligence, 2025
+
+If you use this software or build upon it, please cite the original work:
+
+@inproceedings{dong2025quantitative,
+  title={Quantitative Predictive Monitoring and Control for Safe Human-Machine Interaction},
+  author={Dong, Shuyang and Ma, Meiyi and Lamp, Josephine and Elbaum, Sebastian and Dwyer, Matthew B and Feng, Lu},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={39},
+  number={25},
+  pages={26203--26210},
+  year={2025}
+}
+---
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
